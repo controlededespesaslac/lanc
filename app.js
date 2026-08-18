@@ -19,6 +19,7 @@ const dMaterial = document.getElementById('d-material');
 const dQuantidade = document.getElementById('d-quantidade');
 const dValor = document.getElementById('d-valor');
 const dFornecedor = document.getElementById('d-fornecedor');
+const dDescricao = document.getElementById('d-descricao');
 const dObs = document.getElementById('d-obs');
 const dSubmit = document.getElementById('d-submit');
 const dCancelar = document.getElementById('d-cancelar');
@@ -202,6 +203,7 @@ async function renderDespesas() {
     appendTd(tr, item.cidade);
     appendTd(tr, item.obra);
     appendTd(tr, item.material);
+    appendTd(tr, item.descricao);
     appendTd(tr, formatNumber(item.quantidade));
     appendTd(tr, formatCurrency(item.valor_total));
     appendTd(tr, item.fornecedor);
@@ -242,6 +244,7 @@ function editarDespesa(item) {
   dQuantidade.value = item.quantidade;
   dValor.value = item.valor_total;
   dFornecedor.value = item.fornecedor;
+  dDescricao.value = item.descricao || '';
   dObs.value = item.observacoes || '';
   dSubmit.textContent = 'Salvar Alterações';
   dCancelar.classList.remove('hidden');
@@ -271,6 +274,7 @@ dForm.addEventListener('submit', async e => {
     quantidade: q,
     valor_total: v,
     fornecedor: dFornecedor.value.trim(),
+    descricao: dDescricao.value.trim(),
     observacoes: dObs.value.trim()
   };
 
