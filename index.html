@@ -7,72 +7,203 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
-    <header>
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-box">
       <h1>Controle de Despesas</h1>
-      <p>Gerencie seus gastos de forma simples</p>
-    </header>
-
-    <section class="summary">
-      <div class="card total">
-        <span>Total de Despesas</span>
-        <strong id="total">R$ 0,00</strong>
-      </div>
-      <div class="card count">
-        <span>Registros</span>
-        <strong id="count">0</strong>
-      </div>
-    </section>
-
-    <section class="form-section">
-      <form id="expense-form">
-        <input type="text" id="description" placeholder="Descrição" required />
-        <input type="number" id="amount" placeholder="Valor (R$)" step="0.01" min="0.01" required />
-        <select id="category" required>
-          <option value="" disabled selected>Categoria</option>
-          <option value="Alimentação">Alimentação</option>
-          <option value="Transporte">Transporte</option>
-          <option value="Moradia">Moradia</option>
-          <option value="Saúde">Saúde</option>
-          <option value="Lazer">Lazer</option>
-          <option value="Outros">Outros</option>
-        </select>
-        <input type="date" id="date" required />
-        <button type="submit">Adicionar</button>
+      <form id="login-form">
+        <input type="text" id="login-user" placeholder="Usuário" required />
+        <input type="password" id="login-pass" placeholder="Senha" required />
+        <p id="login-error" class="login-error"></p>
+        <button type="submit">Entrar</button>
       </form>
-    </section>
+    </div>
+  </div>
 
-    <section class="filter-section">
-      <label for="filter-category">Filtrar por categoria</label>
-      <select id="filter-category">
-        <option value="">Todas</option>
-        <option value="Alimentação">Alimentação</option>
-        <option value="Transporte">Transporte</option>
-        <option value="Moradia">Moradia</option>
-        <option value="Saúde">Saúde</option>
-        <option value="Lazer">Lazer</option>
-        <option value="Outros">Outros</option>
-      </select>
-    </section>
+  <div id="main-app" class="main-app hidden">
+    <nav class="nav">
+      <button data-tab="lancamentos" class="nav-btn active">Lançamentos</button>
+      <button data-tab="cadastros" class="nav-btn">Cadastros</button>
+      <button data-tab="dashboard" class="nav-btn">Dashboard</button>
+      <button id="logout" class="logout">Sair</button>
+    </nav>
 
-    <section class="list-section">
-      <table id="expenses-table">
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Descrição</th>
-            <th>Categoria</th>
-            <th>Valor</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="expenses-body"></tbody>
-      </table>
-      <p id="empty" class="empty">Nenhuma despesa cadastrada.</p>
-    </section>
+    <main class="container">
+      <section id="lancamentos" class="tab-content active">
+        <header>
+          <h2>Lançamento de Despesas</h2>
+        </header>
+
+        <section class="form-section">
+          <form id="despesa-form" class="despesa-form">
+            <div class="field">
+              <label for="d-data">Data</label>
+              <input type="date" id="d-data" required />
+            </div>
+            <div class="field">
+              <label for="d-cidade">Cidade</label>
+              <select id="d-cidade" required></select>
+            </div>
+            <div class="field">
+              <label for="d-obra">Obra</label>
+              <select id="d-obra" required></select>
+            </div>
+            <div class="field">
+              <label for="d-material">Material</label>
+              <select id="d-material" required></select>
+            </div>
+            <div class="field">
+              <label for="d-quantidade">Quantidade</label>
+              <input type="number" id="d-quantidade" step="0.01" min="0.01" required />
+            </div>
+            <div class="field">
+              <label for="d-valor">Valor Total</label>
+              <input type="number" id="d-valor" step="0.01" min="0.01" required />
+            </div>
+            <div class="field">
+              <label for="d-fornecedor">Fornecedor</label>
+              <input type="text" id="d-fornecedor" required />
+            </div>
+            <div class="field full">
+              <label for="d-obs">Observações</label>
+              <textarea id="d-obs" rows="2"></textarea>
+            </div>
+            <button type="submit" class="full-btn">Salvar Lançamento</button>
+          </form>
+        </section>
+
+        <section class="list-section">
+          <table id="despesas-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Cidade</th>
+                <th>Obra</th>
+                <th>Material</th>
+                <th>Qtd</th>
+                <th>Valor</th>
+                <th>Fornecedor</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="despesas-body"></tbody>
+          </table>
+          <p id="despesas-empty" class="empty">Nenhuma despesa lançada.</p>
+        </section>
+      </section>
+
+      <section id="cadastros" class="tab-content">
+        <header>
+          <h2>Cadastros</h2>
+        </header>
+
+        <div class="cadastros-grid">
+          <div class="card">
+            <h3>Cidades</h3>
+            <form class="cadastro-form" data-tipo="cidades">
+              <input type="text" placeholder="Nova cidade" required />
+              <button type="submit">Adicionar</button>
+            </form>
+            <ul id="lista-cidades" class="cadastro-lista"></ul>
+          </div>
+
+          <div class="card">
+            <h3>Obras</h3>
+            <form class="cadastro-form" data-tipo="obras">
+              <input type="text" placeholder="Nova obra" required />
+              <button type="submit">Adicionar</button>
+            </form>
+            <ul id="lista-obras" class="cadastro-lista"></ul>
+          </div>
+
+          <div class="card">
+            <h3>Materiais</h3>
+            <form class="cadastro-form" data-tipo="materiais">
+              <input type="text" placeholder="Novo material" required />
+              <button type="submit">Adicionar</button>
+            </form>
+            <ul id="lista-materiais" class="cadastro-lista"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="tab-content">
+        <header>
+          <h2>Dashboard</h2>
+        </header>
+
+        <section class="form-section dashboard-filters">
+          <div class="field">
+            <label for="dash-obra">Obra</label>
+            <select id="dash-obra"><option value="">Todas</option></select>
+          </div>
+          <div class="field">
+            <label for="dash-material">Material</label>
+            <select id="dash-material"><option value="">Todos</option></select>
+          </div>
+          <div class="field">
+            <label for="dash-fornecedor">Fornecedor</label>
+            <input type="text" id="dash-fornecedor" placeholder="Qualquer" />
+          </div>
+          <div class="field">
+            <label for="dash-de">De</label>
+            <input type="date" id="dash-de" />
+          </div>
+          <div class="field">
+            <label for="dash-ate">Até</label>
+            <input type="date" id="dash-ate" />
+          </div>
+          <div class="field">
+            <label for="dash-agrupar">Agrupar por</label>
+            <select id="dash-agrupar">
+              <option value="obra">Obra</option>
+              <option value="material">Material</option>
+              <option value="fornecedor">Fornecedor</option>
+            </select>
+          </div>
+          <button id="dash-filtrar" class="full-btn">Atualizar</button>
+          <button id="dash-imprimir" class="print-btn">Imprimir PDF</button>
+        </section>
+
+        <section class="charts">
+          <div class="chart-box">
+            <canvas id="bar-chart"></canvas>
+          </div>
+          <div class="chart-box">
+            <canvas id="pie-chart"></canvas>
+          </div>
+        </section>
+
+        <section class="list-section">
+          <table id="dash-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Cidade</th>
+                <th>Obra</th>
+                <th>Material</th>
+                <th>Qtd</th>
+                <th>Valor</th>
+                <th>Fornecedor</th>
+              </tr>
+            </thead>
+            <tbody id="dash-body"></tbody>
+          </table>
+          <p id="dash-total" class="dash-total"></p>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="print-area" class="print-area">
+    <h1>Relatório de Despesas</h1>
+    <p id="print-filtros"></p>
+    <img id="print-bar" alt="Gráfico de barras" />
+    <img id="print-pie" alt="Gráfico de pizza" />
+    <table id="print-table"></table>
   </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
