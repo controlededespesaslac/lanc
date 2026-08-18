@@ -262,9 +262,10 @@ dCancelar.addEventListener('click', () => {
 dForm.addEventListener('submit', async e => {
   e.preventDefault();
 
-  const q = parseFloat(dQuantidade.value);
+  let q = parseFloat(dQuantidade.value);
+  if (isNaN(q) || q < 0) q = 0;
   const v = parseFloat(dValor.value);
-  if (isNaN(q) || q <= 0 || isNaN(v) || v <= 0) return;
+  if (isNaN(v) || v <= 0) return;
 
   const despesa = {
     data: dData.value,
