@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Despesas</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Controle de Despesas</h1>
+      <p>Gerencie seus gastos de forma simples</p>
+    </header>
+
+    <section class="summary">
+      <div class="card total">
+        <span>Total de Despesas</span>
+        <strong id="total">R$ 0,00</strong>
+      </div>
+      <div class="card count">
+        <span>Registros</span>
+        <strong id="count">0</strong>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <form id="expense-form">
+        <input type="text" id="description" placeholder="Descrição" required />
+        <input type="number" id="amount" placeholder="Valor (R$)" step="0.01" min="0.01" required />
+        <select id="category" required>
+          <option value="" disabled selected>Categoria</option>
+          <option value="Alimentação">Alimentação</option>
+          <option value="Transporte">Transporte</option>
+          <option value="Moradia">Moradia</option>
+          <option value="Saúde">Saúde</option>
+          <option value="Lazer">Lazer</option>
+          <option value="Outros">Outros</option>
+        </select>
+        <input type="date" id="date" required />
+        <button type="submit">Adicionar</button>
+      </form>
+    </section>
+
+    <section class="filter-section">
+      <label for="filter-category">Filtrar por categoria</label>
+      <select id="filter-category">
+        <option value="">Todas</option>
+        <option value="Alimentação">Alimentação</option>
+        <option value="Transporte">Transporte</option>
+        <option value="Moradia">Moradia</option>
+        <option value="Saúde">Saúde</option>
+        <option value="Lazer">Lazer</option>
+        <option value="Outros">Outros</option>
+      </select>
+    </section>
+
+    <section class="list-section">
+      <table id="expenses-table">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Valor</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="expenses-body"></tbody>
+      </table>
+      <p id="empty" class="empty">Nenhuma despesa cadastrada.</p>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
