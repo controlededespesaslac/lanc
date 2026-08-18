@@ -61,13 +61,14 @@
             </div>
             <div class="field">
               <label for="d-fornecedor">Fornecedor</label>
-              <input type="text" id="d-fornecedor" required />
+              <input type="text" id="d-fornecedor" />
             </div>
             <div class="field full">
               <label for="d-obs">Observações</label>
               <textarea id="d-obs" rows="2"></textarea>
             </div>
-            <button type="submit" class="full-btn">Salvar Lançamento</button>
+            <button type="submit" id="d-submit" class="full-btn">Salvar Lançamento</button>
+            <button type="button" id="d-cancelar" class="full-btn hidden cancelar-edicao">Cancelar Edição</button>
           </form>
         </section>
 

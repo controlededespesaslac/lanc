@@ -226,6 +226,18 @@ td:last-child {
   background: #c0392b;
 }
 
+.edit-btn {
+  background: #1a73e8;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-right: 6px;
+}
+
+.edit-btn:hover {
+  background: #155bb5;
+}
+
 .empty {
   text-align: center;
   color: #999;

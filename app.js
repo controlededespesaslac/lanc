@@ -20,6 +20,8 @@ const dQuantidade = document.getElementById('d-quantidade');
 const dValor = document.getElementById('d-valor');
 const dFornecedor = document.getElementById('d-fornecedor');
 const dObs = document.getElementById('d-obs');
+const dSubmit = document.getElementById('d-submit');
+const dCancelar = document.getElementById('d-cancelar');
 const despesasBody = document.getElementById('despesas-body');
 const despesasEmpty = document.getElementById('despesas-empty');
 
@@ -50,6 +52,7 @@ dData.valueAsDate = new Date();
 
 let barChart = null;
 let pieChart = null;
+let editingId = null;
 
 function formatCurrency(value) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -203,6 +206,11 @@ async function renderDespesas() {
     appendTd(tr, formatCurrency(item.valor_total));
     appendTd(tr, item.fornecedor);
     const acao = document.createElement('td');
+    const edit = document.createElement('button');
+    edit.textContent = 'Editar';
+    edit.className = 'edit-btn';
+    edit.addEventListener('click', () => editarDespesa(item));
+    acao.appendChild(edit);
     const btn = document.createElement('button');
     btn.textContent = 'Excluir';
     btn.className = 'delete-btn';
@@ -225,6 +233,29 @@ async function excluirDespesa(id) {
   await renderDespesas();
 }
 
+function editarDespesa(item) {
+  editingId = item.id;
+  dData.value = item.data;
+  dCidade.value = item.cidade;
+  dObra.value = item.obra;
+  dMaterial.value = item.material;
+  dQuantidade.value = item.quantidade;
+  dValor.value = item.valor_total;
+  dFornecedor.value = item.fornecedor;
+  dObs.value = item.observacoes || '';
+  dSubmit.textContent = 'Salvar Alterações';
+  dCancelar.classList.remove('hidden');
+  dForm.scrollIntoView({ behavior: 'smooth' });
+}
+
+dCancelar.addEventListener('click', () => {
+  editingId = null;
+  dForm.reset();
+  dData.valueAsDate = new Date();
+  dSubmit.textContent = 'Salvar Lançamento';
+  dCancelar.classList.add('hidden');
+});
+
 dForm.addEventListener('submit', async e => {
   e.preventDefault();
 
@@ -233,7 +264,6 @@ dForm.addEventListener('submit', async e => {
   if (isNaN(q) || q <= 0 || isNaN(v) || v <= 0) return;
 
   const despesa = {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2),
     data: dData.value,
     cidade: dCidade.value,
     obra: dObra.value,
@@ -244,12 +274,24 @@ dForm.addEventListener('submit', async e => {
     observacoes: dObs.value.trim()
   };
 
-  const { error } = await client.from('despesas').insert([despesa]);
+  let error;
+  if (editingId) {
+    const result = await client.from('despesas').update(despesa).eq('id', editingId);
+    error = result.error;
+  } else {
+    despesa.id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+    const result = await client.from('despesas').insert([despesa]);
+    error = result.error;
+  }
+
   if (error) {
     alert('Erro ao salvar no banco.');
     return;
   }
 
+  editingId = null;
+  dSubmit.textContent = 'Salvar Lançamento';
+  dCancelar.classList.add('hidden');
   dForm.reset();
   dData.valueAsDate = new Date();
   await renderDespesas();
