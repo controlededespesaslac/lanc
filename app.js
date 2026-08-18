@@ -1,4 +1,8 @@
-const STORAGE_KEY = 'controle_despesas';
+const SUPABASE_URL = 'https://hobqmcphwbebkyducfda.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvYnFtY3Bod2JlYmt5ZHVjZmRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNjc5ODYsImV4cCI6MjEwMjY0Mzk4Nn0.gpM-ra0fzEe2clJM8_dqB7ihaV_q3ICFtVRzVcar25Q';
+const FALLBACK_KEY = 'controle_despesas';
+
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const form = document.getElementById('expense-form');
 const description = document.getElementById('description');
 const amount = document.getElementById('amount');
@@ -12,13 +16,13 @@ const countEl = document.getElementById('count');
 
 date.valueAsDate = new Date();
 
-function load() {
-  const data = localStorage.getItem(STORAGE_KEY);
+function loadLocal() {
+  const data = localStorage.getItem(FALLBACK_KEY);
   return data ? JSON.parse(data) : [];
 }
 
-function save(expenses) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+function saveLocal(expenses) {
+  localStorage.setItem(FALLBACK_KEY, JSON.stringify(expenses));
 }
 
 function formatCurrency(value) {
@@ -35,8 +39,18 @@ function updateSummary(expenses) {
   countEl.textContent = expenses.length;
 }
 
-function render() {
-  const expenses = load().sort((a, b) => new Date(b.date) - new Date(a.date));
+async function load() {
+  try {
+    const { data, error } = await client.from('despesas').select('*').order('date', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    return loadLocal();
+  }
+}
+
+async function render() {
+  const expenses = await load();
   const filter = filterCategory.value;
   const filtered = filter ? expenses.filter(e => e.category === filter) : expenses;
 
@@ -85,14 +99,21 @@ function render() {
   updateSummary(filtered);
 }
 
-function remove(id) {
+async function remove(id) {
   if (!confirm('Deseja excluir esta despesa?')) return;
-  const expenses = load().filter(e => e.id !== id);
-  save(expenses);
+
+  try {
+    const { error } = await client.from('despesas').delete().eq('id', id);
+    if (error) throw error;
+  } catch (err) {
+    const expenses = loadLocal().filter(e => e.id !== id);
+    saveLocal(expenses);
+  }
+
   render();
 }
 
-form.addEventListener('submit', event => {
+form.addEventListener('submit', async event => {
   event.preventDefault();
 
   const value = parseFloat(amount.value);
@@ -106,9 +127,14 @@ form.addEventListener('submit', event => {
     date: date.value
   };
 
-  const expenses = load();
-  expenses.push(expense);
-  save(expenses);
+  try {
+    const { error } = await client.from('despesas').insert([expense]);
+    if (error) throw error;
+  } catch (err) {
+    const expenses = loadLocal();
+    expenses.push(expense);
+    saveLocal(expenses);
+  }
 
   form.reset();
   date.valueAsDate = new Date();
