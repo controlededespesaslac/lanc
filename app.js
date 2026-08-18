@@ -112,19 +112,22 @@ nav.addEventListener('click', e => {
 });
 
 async function carregarCadastros() {
-  const [cidades, obras, materiais] = await Promise.all([
+  const [cidades, obras, materiais, descricoes] = await Promise.all([
     client.from('cidades').select('*').order('nome'),
     client.from('obras').select('*').order('nome'),
-    client.from('materiais').select('*').order('nome')
+    client.from('materiais').select('*').order('nome'),
+    client.from('descricoes').select('*').order('nome')
   ]);
 
   renderLista('cidades', cidades.data || []);
   renderLista('obras', obras.data || []);
   renderLista('materiais', materiais.data || []);
+  renderLista('descricoes', descricoes.data || []);
 
   fillSelect(dCidade, cidades.data || []);
   fillSelect(dObra, obras.data || []);
   fillSelect(dMaterial, materiais.data || []);
+  fillSelect(dDescricao, descricoes.data || []);
   fillSelect(dashObra, obras.data || [], 'Todas');
   fillSelect(dashMaterial, materiais.data || [], 'Todos');
 }

@@ -65,7 +65,7 @@
             </div>
             <div class="field">
               <label for="d-descricao">Descrição</label>
-              <input type="text" id="d-descricao" />
+              <select id="d-descricao"></select>
             </div>
             <div class="field full">
               <label for="d-obs">Observações</label>
@@ -128,6 +128,15 @@
               <button type="submit">Adicionar</button>
             </form>
             <ul id="lista-materiais" class="cadastro-lista"></ul>
+          </div>
+
+          <div class="card">
+            <h3>Descrições</h3>
+            <form class="cadastro-form" data-tipo="descricoes">
+              <input type="text" placeholder="Nova descrição" required />
+              <button type="submit">Adicionar</button>
+            </form>
+            <ul id="lista-descricoes" class="cadastro-lista"></ul>
           </div>
         </div>
       </section>
